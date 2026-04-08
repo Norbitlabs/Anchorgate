@@ -23,12 +23,11 @@ Anchors are the bridges between fiat money and the Stellar blockchain. They hold
 
 | Layer | Technology |
 |---|---|
-| Frontend | Next.js 14 (App Router) + TypeScript |
-| Styling | Tailwind CSS |
-| Blockchain | Stellar Horizon API + stellar-sdk |
-| Data | Static JSON (`/data/anchors.json`) |
-| SEP Polling | Edge functions (Vercel) |
-| Testing | Vitest + Playwright |
+| **Frontend** | Next.js 15 (App Router) + TypeScript + Tailwind CSS |
+| **Backend** | Node.js + Express + TypeScript |
+| **Contracts** | Soroban (Rust) |
+| **Blockchain** | Stellar Horizon API + @stellar/stellar-sdk |
+| **Data** | Static JSON (`/frontend/data/anchors.json`) |
 
 ---
 
@@ -36,87 +35,72 @@ Anchors are the bridges between fiat money and the Stellar blockchain. They hold
 
 ```
 anchorgate/
-├── app/
-│   ├── page.tsx                  # Home — anchor directory
-│   ├── anchor/[id]/page.tsx      # Anchor detail page
-│   ├── compare/page.tsx          # Side-by-side comparison
-│   └── layout.tsx
-├── components/
-│   ├── AnchorCard.tsx
-│   ├── AnchorGrid.tsx
-│   ├── FilterBar.tsx
-│   ├── StatusBadge.tsx
-│   └── SearchInput.tsx
-├── data/
-│   └── anchors.json              # Community-maintained anchor data
-├── lib/
-│   ├── stellar.ts                # Horizon API helpers
-│   ├── sep1.ts                   # SEP-1 TOML parser
-│   └── types.ts                  # Shared TypeScript types
-├── hooks/
-│   ├── useAnchors.ts
-│   └── useAnchorStatus.ts
-└── public/
+├── frontend/             # Next.js Application
+│   ├── app/              # App Router pages
+│   ├── components/       # UI Components
+│   ├── hooks/            # Custom React Hooks
+│   ├── lib/              # Frontend utilities
+│   └── data/             # Anchor data (anchors.json)
+├── backend/              # Express API Service
+│   ├── src/              # Server logic
+│   └── dist/             # Compiled JS
+├── contracts/            # Soroban Smart Contracts
+│   └── src/              # Rust contract code
+└── .github/              # Issue & PR Templates
 ```
 
 ---
 
-## Anchor Data Schema
+## Development Setup
 
-Each anchor entry in `data/anchors.json` follows this shape:
+You can manage the entire project from the root directory using the following commands:
 
-```ts
-{
-  id: string;                     // Unique slug e.g. "cowrie-exchange"
-  name: string;
-  country: string;
-  region: string;                 // "West Africa" | "East Africa" | "Latin America" | ...
-  currencies: string[];           // e.g. ["NGN", "USDC"]
-  seps: string[];                 // ["SEP-6", "SEP-24", "SEP-31"]
-  homeDomain: string;             // For SEP-1 TOML polling
-  depositFee: string;             // e.g. "0.5%"
-  withdrawFee: string;
-  minDeposit: number | null;
-  kycRequired: boolean;
-  website: string;
-  twitter?: string;
-  verified: boolean;              // Verified by a maintainer
-}
+### Prerequisites
+- Node.js & npm
+- Rust & Cargo (for contracts)
+
+### Installation
+```bash
+# Install all dependencies
+npm install
+cd frontend && npm install
+cd ../backend && npm install
+```
+
+### Running Services
+```bash
+# Start the Frontend (http://localhost:3000)
+npm run dev
+
+# Start the Backend (http://localhost:3001)
+npm run backend
+
+# Build the Smart Contracts (to Wasm)
+npm run contract:build
 ```
 
 ---
 
 ## Contributing
 
+We love contributions! Whether you're adding a new anchor or fixing a bug, please check our **[Contributing Guide](./CONTRIBUTING.md)** first.
+
 ### Adding an Anchor
-
-1. Fork the repo
-2. Add your anchor to `data/anchors.json` following the schema above
-3. Open a PR with the title `feat: add [Anchor Name]`
-4. A maintainer will verify the SEP-1 TOML and merge
-
-### Development Setup
-
-```bash
-git clone https://github.com/YOUR_ORG/anchorgate
-cd anchorgate
-npm install
-npm run dev
-```
+1. Fork the repo.
+2. Add your anchor to `frontend/data/anchors.json`.
+3. Open a PR with the title `feat: add [Anchor Name]`.
 
 ---
 
 ## Roadmap
 
 - [x] Static anchor directory with filtering
-- [x] SEP standard badges
+- [x] Multi-layer architecture (Frontend, Backend, Contracts)
 - [ ] SEP-1 TOML live health polling
 - [ ] Anchor detail pages with full asset list
 - [ ] Side-by-side anchor comparison
 - [ ] Fee calculator (send X NGN → receive Y KES)
 - [ ] Anchor submission form (no-code)
-- [ ] Email/webhook alerts for Anchor downtime
-- [ ] Africa region leaderboard by liquidity
 
 ---
 
@@ -126,4 +110,4 @@ MIT — free to use, fork, and build on.
 
 ---
 
-## Built with ❤️ for the Stellar ecosystem
+Built with ❤️ for the Stellar ecosystem
