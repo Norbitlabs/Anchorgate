@@ -1,0 +1,13 @@
+{
+  "name": "anchorgate-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm run start",
+    "lint": "cd frontend && npm run lint",
+    "backend": "cd backend && npm run dev",
+    "contract:build": "cd contracts && cargo build --target wasm32-unknown-unknown --release"
+  }
+}
