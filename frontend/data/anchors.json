@@ -1,18 +1,1 @@
-[
-  {
-    "id": "cowrie-exchange",
-    "name": "Cowrie Exchange",
-    "country": "Nigeria",
-    "region": "West Africa",
-    "currencies": ["NGN", "USDC"],
-    "seps": ["SEP-6", "SEP-24", "SEP-31"],
-    "homeDomain": "cowrie.exchange",
-    "depositFee": "0.5%",
-    "withdrawFee": "1.0%",
-    "minDeposit": 1000,
-    "kycRequired": true,
-    "website": "https://cowrie.exchange",
-    "twitter": "@cowrie_exchange",
-    "verified": true
-  }
-]
+[]
