@@ -16,7 +16,7 @@ app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'active', timestamp: new Date().toISOString() });
 });
 
-// Anchor status polling endpoint (placeholder)
+// Anchor status polling endpoint with timeout protection
 app.get('/api/poll', async (req: Request, res: Response) => {
   const { domain } = req.query;
 
@@ -24,12 +24,25 @@ app.get('/api/poll', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'Domain parameter is required' });
   }
 
+  // Use a promise race to implement a 5-second timeout
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('TIMEOUT')), 5000)
+  );
+
   try {
-    // Simple health check by resolving TOML
-    await StellarToml.Resolver.resolve(domain);
+    await Promise.race([
+      StellarToml.Resolver.resolve(domain),
+      timeout
+    ]);
     res.json({ status: 'active', domain });
-  } catch (error) {
-    res.json({ status: 'offline', domain, error: 'Could not resolve stellar.toml' });
+  } catch (error: any) {
+    console.error(`Status check failed for ${domain}:`, error.message);
+    
+    if (error.message === 'TIMEOUT') {
+      res.json({ status: 'offline', domain, error: 'Connection timed out' });
+    } else {
+      res.json({ status: 'offline', domain, error: 'Could not resolve stellar.toml' });
+    }
   }
 });
 
